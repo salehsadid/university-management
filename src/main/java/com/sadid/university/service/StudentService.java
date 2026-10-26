@@ -1,5 +1,6 @@
 package com.sadid.university.service;
 
+import com.sadid.university.dto.ProfileUpdateRequest;
 import com.sadid.university.dto.StudentCreateRequest;
 import com.sadid.university.dto.StudentResponse;
 import com.sadid.university.dto.StudentUpdateRequest;
@@ -11,6 +12,7 @@ import com.sadid.university.exception.ResourceNotFoundException;
 import com.sadid.university.repository.AppUserRepository;
 import com.sadid.university.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<StudentResponse> getAll() {
@@ -47,7 +50,7 @@ public class StudentService {
 
         AppUser user = new AppUser();
         user.setEmail(request.email());
-        user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(Role.STUDENT);
 
         Student student = new Student();
@@ -85,7 +88,7 @@ public class StudentService {
 
         user.setEmail(request.email());
         if (request.password() != null) {
-            user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+            user.setPassword(passwordEncoder.encode(request.password()));
         }
 
         return StudentResponse.from(student);
@@ -97,8 +100,46 @@ public class StudentService {
         studentRepository.delete(student);
     }
 
+    // ---- Own profile (/me), identified by the logged-in user's email ----
+
+    @Transactional(readOnly = true)
+    public StudentResponse getByEmail(String email) {
+        return StudentResponse.from(findStudentByEmailOrThrow(email));
+    }
+
+    @Transactional
+    public StudentResponse updateProfile(String email, ProfileUpdateRequest request) {
+        Student student = findStudentByEmailOrThrow(email);
+        AppUser user = student.getUser();
+
+        boolean emailChanged = !user.getEmail().equals(request.email());
+        if (emailChanged && appUserRepository.existsByEmail(request.email())) {
+            throw new DuplicateResourceException("Email already in use: " + request.email());
+        }
+
+        student.setName(request.name());
+        student.setPhone(request.phone());
+
+        user.setEmail(request.email());
+        if (request.password() != null) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        return StudentResponse.from(student);
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        studentRepository.delete(findStudentByEmailOrThrow(email));
+    }
+
     private Student findStudentOrThrow(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+    }
+
+    private Student findStudentByEmailOrThrow(String email) {
+        return studentRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with email: " + email));
     }
 }

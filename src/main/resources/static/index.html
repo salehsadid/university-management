@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>University Management</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+    <h1>University Management</h1>
+    <div id="user-box" hidden>
+        <span id="user-info"></span>
+        <button id="logout-btn" class="secondary">Logout</button>
+    </div>
+</header>
+
+<main>
+    <!-- Login (everyone) -->
+    <section id="login-view" class="card narrow" hidden>
+        <h2>Login</h2>
+        <form id="login-form">
+            <label>Email
+                <input name="email" type="email" required autocomplete="username">
+            </label>
+            <label>Password
+                <input name="password" type="password" required autocomplete="current-password">
+            </label>
+            <p class="error" id="login-error"></p>
+            <button type="submit">Login</button>
+        </form>
+        <p class="hint">Default admin: admin@uni.edu / admin123</p>
+    </section>
+
+    <!-- Admin: CRUD on students, teachers, admins -->
+    <section id="admin-view" hidden>
+        <nav class="tabs">
+            <button data-tab="students">Students</button>
+            <button data-tab="teachers">Teachers</button>
+            <button data-tab="admins">Admins</button>
+        </nav>
+        <div class="card">
+            <div class="toolbar">
+                <h2 id="list-title"></h2>
+                <button id="add-btn">+ Add</button>
+            </div>
+            <div class="table-wrap">
+                <table id="list-table"></table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student / Teacher: own profile -->
+    <section id="profile-view" class="card narrow" hidden>
+        <h2>My Profile</h2>
+        <dl id="profile-details"></dl>
+        <p class="hint">You can change your name, email, password and phone.</p>
+        <div class="actions">
+            <button id="edit-profile-btn">Edit Profile</button>
+            <button id="delete-profile-btn" class="danger">Delete Account</button>
+        </div>
+    </section>
+</main>
+
+<!-- Shared add/edit form -->
+<dialog id="form-dialog">
+    <form id="entity-form">
+        <h2 id="form-title"></h2>
+        <div id="form-fields"></div>
+        <p class="error" id="form-error"></p>
+        <div class="actions">
+            <button type="button" class="secondary" id="cancel-btn">Cancel</button>
+            <button type="submit">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

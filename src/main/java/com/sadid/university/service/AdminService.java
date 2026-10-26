@@ -11,6 +11,7 @@ import com.sadid.university.exception.ResourceNotFoundException;
 import com.sadid.university.repository.AdminRepository;
 import com.sadid.university.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
     private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<AdminResponse> getAll() {
@@ -44,7 +46,7 @@ public class AdminService {
 
         AppUser user = new AppUser();
         user.setEmail(request.email());
-        user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(Role.ADMIN);
 
         Admin admin = new Admin();
@@ -68,7 +70,7 @@ public class AdminService {
 
         user.setEmail(request.email());
         if (request.password() != null) {
-            user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+            user.setPassword(passwordEncoder.encode(request.password()));
         }
 
         return AdminResponse.from(admin);

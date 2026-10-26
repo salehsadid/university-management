@@ -1,5 +1,6 @@
 package com.sadid.university.service;
 
+import com.sadid.university.dto.ProfileUpdateRequest;
 import com.sadid.university.dto.TeacherCreateRequest;
 import com.sadid.university.dto.TeacherResponse;
 import com.sadid.university.dto.TeacherUpdateRequest;
@@ -11,6 +12,7 @@ import com.sadid.university.exception.ResourceNotFoundException;
 import com.sadid.university.repository.AppUserRepository;
 import com.sadid.university.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<TeacherResponse> getAll() {
@@ -44,7 +47,7 @@ public class TeacherService {
 
         AppUser user = new AppUser();
         user.setEmail(request.email());
-        user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(Role.TEACHER);
 
         Teacher teacher = new Teacher();
@@ -74,7 +77,7 @@ public class TeacherService {
 
         user.setEmail(request.email());
         if (request.password() != null) {
-            user.setPassword(request.password()); // TODO Lesson 4: hash with BCrypt
+            user.setPassword(passwordEncoder.encode(request.password()));
         }
 
         return TeacherResponse.from(teacher);
@@ -85,8 +88,46 @@ public class TeacherService {
         teacherRepository.delete(findTeacherOrThrow(id));
     }
 
+    // ---- Own profile (/me), identified by the logged-in user's email ----
+
+    @Transactional(readOnly = true)
+    public TeacherResponse getByEmail(String email) {
+        return TeacherResponse.from(findTeacherByEmailOrThrow(email));
+    }
+
+    @Transactional
+    public TeacherResponse updateProfile(String email, ProfileUpdateRequest request) {
+        Teacher teacher = findTeacherByEmailOrThrow(email);
+        AppUser user = teacher.getUser();
+
+        boolean emailChanged = !user.getEmail().equals(request.email());
+        if (emailChanged && appUserRepository.existsByEmail(request.email())) {
+            throw new DuplicateResourceException("Email already in use: " + request.email());
+        }
+
+        teacher.setName(request.name());
+        teacher.setPhone(request.phone());
+
+        user.setEmail(request.email());
+        if (request.password() != null) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        return TeacherResponse.from(teacher);
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        teacherRepository.delete(findTeacherByEmailOrThrow(email));
+    }
+
     private Teacher findTeacherOrThrow(Long id) {
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with id: " + id));
+    }
+
+    private Teacher findTeacherByEmailOrThrow(String email) {
+        return teacherRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with email: " + email));
     }
 }

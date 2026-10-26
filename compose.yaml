@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: university_db
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      # 127.0.0.1 forces TCP, so the check only passes once MySQL accepts network connections
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/university_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      APP_ADMIN_EMAIL: admin@uni.edu
+      APP_ADMIN_PASSWORD: admin123
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:

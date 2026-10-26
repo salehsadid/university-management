@@ -1,0 +1,295 @@
+:root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --text: #222222;
+    --muted: #666666;
+    --border: #dddddd;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --danger: #dc2626;
+    --danger-hover: #b91c1c;
+    --success: #16a34a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* ---- Layout ---- */
+
+.topbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar h1 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+#user-box {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--muted);
+}
+
+main {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+}
+
+.narrow {
+    max-width: 440px;
+    margin: 40px auto;
+}
+
+h2 {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+.error {
+    color: var(--danger);
+    font-size: 0.875rem;
+    min-height: 1em;
+}
+
+/* ---- Forms ---- */
+
+label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+input {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 8px 10px;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: -1px;
+}
+
+/* Password input with the eye button inside it */
+.password-wrap {
+    position: relative;
+    margin-top: 4px;
+}
+
+.password-wrap input {
+    margin-top: 0;
+    padding-right: 42px;
+}
+
+button.eye-btn {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    display: flex;
+    padding: 6px;
+    color: var(--muted);
+    background: transparent;
+    transform: translateY(-50%);
+}
+
+button.eye-btn:hover {
+    color: var(--text);
+    background: transparent;
+}
+
+button {
+    padding: 8px 16px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: #fff;
+    background: var(--primary);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--primary-hover);
+}
+
+button.secondary {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+button.secondary:hover {
+    background: var(--bg);
+}
+
+button.danger {
+    background: var(--danger);
+}
+
+button.danger:hover {
+    background: var(--danger-hover);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+/* ---- Admin tabs + table ---- */
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tabs button {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+.tabs button.active {
+    color: #fff;
+    background: var(--primary);
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.toolbar h2 {
+    margin: 0;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+th {
+    color: var(--muted);
+    background: var(--bg);
+}
+
+td.empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.row-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.row-actions button {
+    padding: 4px 10px;
+}
+
+/* ---- Profile ---- */
+
+dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 16px;
+    margin: 0;
+}
+
+dt {
+    color: var(--muted);
+}
+
+dd {
+    margin: 0;
+}
+
+/* ---- Dialog + toast ---- */
+
+dialog {
+    width: min(440px, calc(100vw - 32px));
+    padding: 20px 24px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+dialog::backdrop {
+    background: rgb(0 0 0 / 0.3);
+}
+
+#toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 32px);
+    padding: 10px 18px;
+    color: #fff;
+    background: var(--success);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+}
+
+#toast.toast-error {
+    background: var(--danger);
+}
