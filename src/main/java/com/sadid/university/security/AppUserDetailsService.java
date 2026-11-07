@@ -23,6 +23,7 @@ public class AppUserDetailsService implements UserDetailsService {
         return User.withUsername(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().name())
+                //ekhane session e role add hoi
                 .build();
     }
 }

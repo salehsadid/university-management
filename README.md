@@ -2,9 +2,9 @@
 
 A Spring Boot REST API with three roles: **Admin**, **Teacher** and **Student**.
 
-- Java 17, Spring Boot, Spring Data JPA, MySQL 8
+- Java 17, Spring Boot, Spring Data JPA, PostgreSQL 17
 - Spring Security: session login (JSON endpoint), BCrypt password hashing, CSRF protection, role-based access control
-- Docker Compose runs the app and MySQL together
+- Docker Compose runs the app and PostgreSQL together
 
 ## Running
 
@@ -18,7 +18,7 @@ This starts two containers:
 
 | Service | What it is | Port |
 |---------|------------|------|
-| `db`    | MySQL 8, database `university_db`, data kept in the `db-data` volume | not published |
+| `db`    | PostgreSQL 17, database `university_db`, data kept in the `pg-data` volume | not published |
 | `app`   | The Spring Boot API, starts once `db` is healthy | `8080` |
 
 Open `http://localhost:8080` in a browser for the web frontend. The API is under `http://localhost:8080/api/...`.
@@ -26,7 +26,7 @@ Stop it with `docker compose down` (add `-v` to also delete the database volume)
 
 ### Locally (without Docker for the app)
 
-Start a MySQL server on `localhost:3306` with database `university_db` and user `root` / `root`, then:
+Start a PostgreSQL server on `localhost:5432` with database `university_db` and user `postgres` / `postgres`, then:
 
 ```bash
 ./mvnw spring-boot:run

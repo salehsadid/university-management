@@ -34,6 +34,7 @@ public class StudentController {
     // ---- Own profile (STUDENT only, see SecurityConfig) ----
 
     @GetMapping("/me")
+    //JUST NIJEKE DEKHTE PARBE AS ID NAI
     public StudentResponse getMe(Authentication authentication) {
         return studentService.getByEmail(authentication.getName());
     }

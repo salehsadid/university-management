@@ -1,14 +1,15 @@
 services:
   db:
-    image: mysql:8
+    image: postgres:17
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: university_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_db
     volumes:
-      - db-data:/var/lib/mysql
+      - pg-data:/var/lib/postgresql/data
     healthcheck:
-      # 127.0.0.1 forces TCP, so the check only passes once MySQL accepts network connections
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      # -h 127.0.0.1 forces TCP, so the check only passes once PostgreSQL accepts network connections
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "university_db"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -18,9 +19,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/university_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/university_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       APP_ADMIN_EMAIL: admin@uni.edu
       APP_ADMIN_PASSWORD: admin123
     depends_on:
@@ -28,4 +29,4 @@ services:
         condition: service_healthy
 
 volumes:
-  db-data:
+  pg-data:

@@ -47,10 +47,12 @@ public class StudentService {
         if (studentRepository.existsByStudentId(request.studentId())) {
             throw new DuplicateResourceException("Student ID already exists: " + request.studentId());
         }
+        //check kore exist kore kina
 
         AppUser user = new AppUser();
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
+        //pass bcrypt kore hashing
         user.setRole(Role.STUDENT);
 
         Student student = new Student();

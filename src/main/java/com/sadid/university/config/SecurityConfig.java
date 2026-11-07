@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/app.js", "/style.css").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        //ekhane prottek req check hoi role kar konta
                         .requestMatchers("/api/students/me").hasRole("STUDENT")
                         .requestMatchers("/api/teachers/me").hasRole("TEACHER")
                         .requestMatchers("/api/students/**", "/api/teachers/**", "/api/admins/**").hasRole("ADMIN")
